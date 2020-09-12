@@ -1,0 +1,167 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# asignando relaciones de confianza con el ssh-keygen|
+#
+
+#1.- verifiamos nuestra ip, debe ser: inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+hdsdcuser@srvbigdata:~$ ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:de:97:a4:63  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::5bda:c12c:4444:11ec  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:cb:b4:88  txqueuelen 1000  (Ethernet)
+        RX packets 233202  bytes 220609339 (220.6 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 69256  bytes 4705853 (4.7 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 1576  bytes 157597 (157.5 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1576  bytes 157597 (157.5 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#2.- editamos el /etc/hosts
+hdsdcuser@srvbigdata:~$ sudo nano /etc/hosts
+
+  GNU nano 4.8                       /etc/hosts                                 
+127.0.0.1       localhost
+127.0.1.1       hdsdcuser-uvb
+10.0.2.15       srvbigdata					<--- con este testeamos ssh
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+#3.- testeamos la relación de confianza, como no hemos configurado
+# colocar la clave
+hdsdcuser@srvbigdata:~$ ssh srvbigdata date
+The authenticity of host 'srvbigdata (10.0.2.15)' can't be established.
+ECDSA key fingerprint is SHA256:W+uxBinHNMMEjwjcsiO8fNHVhKW21Pncwp9qqKGIufI.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'srvbigdata' (ECDSA) to the list of known hosts.
+hdsdcuser@srvbigdata's password: 
+Fri 28 Aug 2020 10:30:35 AM -05
+
+#4.- ingresamos como hdsdcuser, con el comando su hdsdcuser
+hdsdcuser@srvbigdata:~$ su hdsdcuser
+Password: 
+
+hdsdcuser@srvbigdata:~$ su - hdsdcuser
+Password: 
+
+hdsdcuser@srvbigdata:~$ echo $USER
+hdsdcuser
+
+#5.- volvemos a validar, pues como ya nos logueamos debe permitir
+hdsdcuser@srvbigdata:~$ ssh srvbigdata date
+hdsdcuser@srvbigdata's password: 
+Fri 28 Aug 2020 10:37:09 AM -05
+
+#6.- generemos las claves respectivas con el ssh-keygen
+# para este caso "Enter file in which to save the key (/home/hdsdcuser/.ssh/id_rsa): " , presionar enter (dejar en blanco)
+# para este caso "Enter passphrase (empty for no passphrase):  " , presionar enter (dejar en blanco)
+# para este caso "Enter same passphrase again: " , presionar enter (dejar en blanco)
+# esperar, hasta que genera id_rsa, id_rsa.pub
+hdsdcuser@srvbigdata:~$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/hdsdcuser/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/hdsdcuser/.ssh/id_rsa
+Your public key has been saved in /home/hdsdcuser/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:dz6gsVtWzxdzeW6HbJF2NE5XX9m7VFtsOt/PHAArNuQ hdsdcuser@srvbigdata
+The key's randomart image is:
++---[RSA 3072]----+
+|               .=|
+|         . .   .X|
+|        o   o  =O|
+|         E . .=*+|
+|        S = o *B*|
+|         = = = BB|
+|        o o o *oB|
+|         +   o o=|
+|        .        |
++----[SHA256]-----+
+
+#7.- ingresamos al directorio donde se genera los key-gen, nos vamos al directorio .ssh/
+hdsdcuser@srvbigdata:~$ cd .ssh/
+hdsdcuser@srvbigdata:~/.ssh$ ls
+id_rsa  id_rsa.pub  known_hosts
+
+#8.- creamos el authorized_keys, que es el que almacena las llaves permitidas
+hdsdcuser@srvbigdata:~/.ssh$ cat id_rsa.pub >> authorized_keys
+
+#9.- verificamos los archivo creados
+hdsdcuser@srvbigdata:~/.ssh$ ls -l
+total 16
+-rw-rw-r-- 1 hdsdcuser hdsdcuser  574 Yag  28 10:39 authorized_keys
+-rw------- 1 hdsdcuser hdsdcuser 2610 Yag  28 10:38 id_rsa
+-rw-r--r-- 1 hdsdcuser hdsdcuser  574 Yag  28 10:38 id_rsa.pub
+-rw-r--r-- 1 hdsdcuser hdsdcuser  444 Yag  28 10:30 known_hosts
+
+
+#10.- ahora verificamos la relación de confianzam, con el comando ssh <<hostname>> date
+hdsdcuser@srvbigdata:~/.ssh$ ssh srvbigdata date
+Fri 28 Aug 2020 10:40:43 AM -05
+
+#11.- testeamos con las ips del hostname 127.0.0.1, 127.0.1.1, 0.0.0.0, srvbigdata, con el comando ssh <<hostname>> date
+hdsdcuser@srvbigdata:~/.ssh$ ssh localhost date
+The authenticity of host 'localhost (127.0.0.1)' can't be established.
+ECDSA key fingerprint is SHA256:W+uxBinHNMMEjwjcsiO8fNHVhKW21Pncwp9qqKGIufI.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+Fri 28 Aug 2020 10:40:32 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 127.0.1.1 date
+The authenticity of host '127.0.1.1 (127.0.1.1)' can't be established.
+ECDSA key fingerprint is SHA256:W+uxBinHNMMEjwjcsiO8fNHVhKW21Pncwp9qqKGIufI.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '127.0.1.1' (ECDSA) to the list of known hosts.
+Fri 28 Aug 2020 10:41:05 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 0.0.0.0 date
+The authenticity of host '0.0.0.0 (0.0.0.0)' can't be established.
+ECDSA key fingerprint is SHA256:W+uxBinHNMMEjwjcsiO8fNHVhKW21Pncwp9qqKGIufI.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '0.0.0.0' (ECDSA) to the list of known hosts.
+Fri 28 Aug 2020 10:41:17 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh srvbigdata date
+Fri 28 Aug 2020 10:40:43 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 127.0.0.1 date
+Fri 28 Aug 2020 10:40:57 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 10.0.2.15 date
+Fri 28 Aug 2020 10:44:17 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 127.0.1.1 date
+Fri 28 Aug 2020 10:44:32 AM -05
+
+hdsdcuser@srvbigdata:~/.ssh$ ssh 0.0.0.0 date
+Fri 28 Aug 2020 10:44:52 AM -05
+
+
+# continuamos con los siguientes pasos

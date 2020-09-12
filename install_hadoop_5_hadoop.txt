@@ -1,0 +1,130 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# ahora buscamos el binario hadoop para instalar
+#
+
+#1.- navegamos en 
+http://hadoop.apache.org/
+
+#2.- descargamos haciendo clic en download
+https://hadoop.apache.org/releases.html
+
+Download
+
+Hadoop is released as source code tarballs with corresponding binary tarballs for convenience. The downloads are distributed via mirror sites and should be checked for tampering using GPG or SHA-512.
+
+Version 	Release date 	Source download 	Binary download 	Release notes
+3.3.0 	2020 Jul 14 	source (checksum signature) 	binary (checksum signature)
+binary-aarch64 (checksum signature) 	Announcement
+2.10.0 	2019 Oct 29 	source (checksum signature) 	binary (checksum signature) 	Announcement
+3.1.3 	2019 Oct 21 	source (checksum signature) 	binary (checksum signature) 	Announcement
+3.2.1 	2019 Sep 22 	source (checksum signature) 	binary (checksum signature) 	Announcement
+2.9.2 	2018 Nov 19 	source (checksum signature) 	binary (checksum signature) 	Announcement
+
+#
+#3.- revisar navegamos en cada opción de "Announcement" y "Release notes" de la "Version": 2.10.0
+
+#4.- presionar en binary, para redirigir al page donde descargaremos el recurso: hadoop-2.10.0.tar.gz
+https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz
+
+#5.- ubicamos el archivo descargado
+hadoop-2.10.0.tar.gz
+
+#6.- verificamos al documentación
+https://hadoop.apache.org/docs/r2.10.0/index.html
+
+https://hadoop.apache.org/release/3.3.0.html
+
+#7.- seleccionamos binary, para poder descargar hadoop-2.10.0.tar.gz
+binary (checksum signature) 
+
+https://downloads.apache.org/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz
+
+#8.- esperamos descarga, por default se ubica en /Descargas o /Downloads
+
+
+#9.- descomprimos el archivo descargado
+# si desempaquetamos de la siguiente manera, estaremos descomprimiendo en el directorio donde nos encontramos pwd
+hdsdcuser@srvbigdata:~$ tar -xzvf Downloads/hadoop-2.10.0.tar.gz
+
+hdsdcuser@srvbigdata:~$ ls -l
+total 36
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Desktop
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 22 03:32 Documents
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 28 11:18 Downloads
+drwxr-xr-x 9 hdsdcuser hdsdcuser 4096 Oct 22  2019 hadoop-2.10.0				<-- este directorio fue creado y contiene el hadoop
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Music
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Pictures
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Public
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Templates
+drwxr-xr-x 2 hdsdcuser hdsdcuser 4096 Aug 21 20:26 Videos
+
+
+#10.- nos movemos, si el directorio destino no existe, se crea automáticamente
+#vamos a copiar el binario descomprimido de hadoop en el directorio /usr/local/hadoop
+hdsdcuser@srvbigdata:~$ sudo mv hadoop-2.10.0 /usr/local/hadoop
+
+#11.- otorgaremos permisos al grupo hadoop que fue creado anteriormente y donde se encuentra como integrante el usuario hdsdcuser
+hdsdcuser@srvbigdata:~$ sudo chown -R hdsdcuser:hadoop /usr/local/hadoop
+
+#12.- verificamos la asignación de permisos al grupo hadoop
+hdsdcuser@srvbigdata:~$ ls -lhrt /usr/local/hadoop
+total 152K
+drwxr-xr-x 4 hdsdcuser hadoop 4.0K Oct 22  2019 share
+-rw-r--r-- 1 hdsdcuser hadoop 1.4K Oct 22  2019 README.txt
+-rw-r--r-- 1 hdsdcuser hadoop  16K Oct 22  2019 NOTICE.txt
+-rw-r--r-- 1 hdsdcuser hadoop 104K Oct 22  2019 LICENSE.txt
+drwxr-xr-x 3 hdsdcuser hadoop 4.0K Oct 22  2019 lib
+drwxr-xr-x 3 hdsdcuser hadoop 4.0K Oct 22  2019 etc
+drwxr-xr-x 3 hdsdcuser hadoop 4.0K Oct 22  2019 sbin
+drwxr-xr-x 2 hdsdcuser hadoop 4.0K Oct 22  2019 libexec
+drwxr-xr-x 2 hdsdcuser hadoop 4.0K Oct 22  2019 include
+drwxr-xr-x 2 hdsdcuser hadoop 4.0K Oct 22  2019 bin
+
+#13.- ya tenemos instalado el hadoop, pero sin los parámetros y variables de sistema configurado
+#pero podemos ejecutar el comando: /usr/local/hadoop/bin/hadoop version
+#nos muestra que debemos configurar algunas variables como el JAVA_HOME
+hdsdcuser@srvbigdata:~$ /usr/local/hadoop/bin/hadoop version
+Error: JAVA_HOME is not set and could not be found.
+hdsdcuser@srvbigdata:~$ echo $JAVA_HOME
+
+#14.- abrimos para editar el .bashrc, y registramos las variable JAVA_HOME y JRE_HOME
+hdsdcuser@srvbigdata:~$ sudo nano .bashrc
+...
+######################################################
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+######################################################
+
+#15.- actualizamos el registro, y podemos recargar las variables de entorno y de sistema
+#
+hdsdcuser@srvbigdata:~$ source .bashrc
+#
+hdsdcuser@srvbigdata:~$ . .bashrc
+
+
+#16.- verificamos que las variables fueron cargadas
+hdsdcuser@srvbigdata:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64
+hdsdcuser@srvbigdata:~$ echo $JRE_HOME
+/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+
+#17.- ahora si volvemos a ejecutar hadoop
+hdsdcuser@srvbigdata:~$ /usr/local/hadoop/bin/hadoop version
+Hadoop 2.10.0
+Subversion ssh://git.corp.linkedin.com:29418/hadoop/hadoop.git -r e2f1f118e465e787d8567dfa6e2f3b72a0eb9194
+Compiled by jhung on 2019-10-22T19:10Z
+Compiled with protoc 2.5.0
+From source with checksum 7b2d8877c5ce8c9a2cca5c7e81aa4026
+This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.10.0.jar
+
+
+# continuamos con los siguientes pasos

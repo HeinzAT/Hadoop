@@ -1,0 +1,132 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# instalando el Java usamos el OpenJDK (open source)
+
+#1.- actualizamos nuestro sistema
+hdsdcuser@hdsdcuser-uvb:~$ sudo apt-get update
+
+#2.- verificamos si tenemos instalado algún java (jre o jdk)
+hdsdcuser@hdsdcuser-uvb:~$ sudo update-alternatives --config java
+update-alternatives: error: no alternatives for java
+
+#3.- lanzamos el comando java -version, para encontrar la versión instalada, 
+#en caso contrario, se muestrará los candidatos
+hdsdcuser@hdsdcuser-uvb:~$ java -version
+
+Command 'java' not found, but can be installed with:
+
+sudo apt install openjdk-11-jre-headless  # version 11.0.8+10-0ubuntu1~20.04, or
+sudo apt install default-jre              # version 2:1.11-72
+sudo apt install openjdk-13-jre-headless  # version 13.0.3+3-1ubuntu2
+sudo apt install openjdk-14-jre-headless  # version 14.0.1+7-1ubuntu1
+sudo apt install openjdk-8-jre-headless   # version 8u265-b01-0ubuntu2~20.04
+
+
+#4.- instalamos el gestor de paquetes en el so, dpkg 
+hdsdcuser@hdsdcuser-uvb:~$ sudo dpkg --configure -a
+
+/*
+#
+hdsdcuser@hdsdcuser-uvb:~$ sudo apt-get install default-jdk
+hdsdcuser@hdsdcuser-uvb:~$ sudo apt-get autoremove default-jdk openjdk-11-jdk
+UNINSTALL ORACLE JDK
+Remove The Link
+First of all remove the alternatives by executing the following commands:
+
+$ sudo update-alternatives --remove "java" "/usr/lib/jvm/jdk[version]/bin/java"
+$ sudo update-alternatives --remove "javac" "/usr/lib/jvm/jdk[version]/bin/javac"
+$ sudo update-alternatives --remove "javaws" "/usr/lib/jvm/jdk[version]/jre/bin/javaws"
+Note: Replace the [version] with any version number that’s contained in jdk folder’s name. For example: jdk1.8.0_131.
+
+Remove The Package
+After removing link, remove the package inside /usr/lib/jvm/jdk[version] by executing following command:
+$ sudo rm -r /usr/lib/jvm/jdk[version]
+
+UNINSTALL OPENJDK
+If you want to remove Openjdk only, execute the following command on terminal:
+$ sudo apt-get remove openjdk*
+
+If you want to remove Openjdk along with dependencies, execute the following command on terminal:
+$ sudo apt-get remove --auto-remove openjdk*
+
+If you want to remove Openjdk and it’s configuration files, execute the following command on terminal:
+$ sudo apt-get purge openjdk*
+
+If you want to remove Openjdk along with dependencies and it’s configuration files, execute the following command on terminal:
+$ sudo apt-get purge --auto-remove openjdk*
+
+This is how you can uninstall JDK. Share this, if it is helpful to you and please report us if you found and error in this post. Thank you.
+
+*/
+
+#5.- lanzamos la instalación del openjpk-8 (open source)
+hdsdcuser@hdsdcuser-uvb:~$ sudo apt-get install openjdk-8-jdk
+
+#6.- terminada la instalación verificamos la versión del JRE
+hdsdcuser@hdsdcuser-uvb:~$ java -version
+openjdk version "1.8.0_265"
+OpenJDK Runtime Environment (build 1.8.0_265-8u265-b01-0ubuntu2~20.04-b01)
+OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
+
+#7.- terminada la instalación verificamos la versión del JDK
+hdsdcuser@hdsdcuser-uvb:~$ javac -version
+javac 1.8.0_265
+
+#8.- en caso tenemos más de una instalación JDK (java)/JRE (javac) podemos modificar con cual usar, 
+# OJO: pero debemos reconfigurar las variables de entorno, si cambiamos en /etc/environment o en /.bashrc
+hdsdcuser@hdsdcuser-uvb:~$ sudo update-alternatives --config java
+There is only one alternative in link group java (providing /usr/bin/java): /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+Nothing to configure.
+
+#
+hdsdcuser@hdsdcuser-uvb:~$ sudo update-alternatives --config javac
+There is only one alternative in link group javac (providing /usr/bin/javac): /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+Nothing to configure.
+
+#9.- configuramos las variables de entorno JAVA_HOME y JRE_HOME
+# editamos el archivo /etc/environment pero este solo aplica en la sesión, luego configuramos a nivel de arranque de so
+hdsdcuser@hdsdcuser-uvb:~$ sudo nano /etc/environment
+
+#editamos el archivo '/etc/environment'
+JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+JRE_HOME="/usr/lib/jvm/java-8-openjdk-amd64/jre"
+
+#10.- verificamos que se haya creado el JRE_HOME y JDK_HOME
+hdsdcuser@srvbigdata:~$ echo $JAVA_HOME
+
+hdsdcuser@srvbigdata:~$ source /etc/environment
+hdsdcuser@srvbigdata:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64
+hdsdcuser@srvbigdata:~$ echo $JRE_HOME
+/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+
+#11.- volvermos a cargar el archivo para aplicar los cambios a la sesion
+hdsdcuser@hdsdcuser-uvb:~$ source /etc/environment
+
+#verificamos las variables
+#12.- volvemos a verificar las variables cargadas
+hdsdcuser@hdsdcuser-uvb:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64
+
+#
+hdsdcuser@hdsdcuser-uvb:~$ echo $JRE_HOME
+/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+
+#13.- verificamos a nivel del JDK instalado y marcado por default
+hdsdcuser@srvbigdata:~$ java -version
+openjdk version "1.8.0_265"
+OpenJDK Runtime Environment (build 1.8.0_265-8u265-b01-0ubuntu2~20.04-b01)
+OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
+hdsdcuser@srvbigdata:~$ javac -version
+javac 1.8.0_265
+
+# continuamos con los siguientes pasos

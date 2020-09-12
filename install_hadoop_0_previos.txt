@@ -1,0 +1,132 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# Instalar Hadoop en Ubuntu
+#
+
+#1.- verificamos nuestra kernel linux
+hdsdcuser@hdsdcuser-uvb:~$ uname -a
+Linux hdsdcuser-uvb 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+#2.- verificamos nuestra versión instalada
+hdsdcuser@hdsdcuser-uvb:~$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.1 LTS
+Release:	20.04
+Codename:	focal
+
+#3.- verificamos el hosts
+hdsdcuser@hdsdcuser-uvb:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	hdsdcuser-uvb
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+#4.- verifiamos los nombres de hostname del equipo
+hdsdcuser@hdsdcuser-uvb:~$ hostnamectl
+   Static hostname: hdsdcuser-uvb
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: ad3f3120c97146978b4d26ef90ba409e
+           Boot ID: ddb63e1b257f44c3baaf300bde4604fc
+    Virtualization: oracle
+  Operating System: Ubuntu 20.04.1 LTS
+            Kernel: Linux 5.4.0-42-generic
+      Architecture: x86-64
+
+#5.- verificamos nuestra IP, regularmente es: inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+hdsdcuser@hdsdcuser-uvb:~$ ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:de:97:a4:63  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::5bda:c12c:4444:11ec  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:cb:b4:88  txqueuelen 1000  (Ethernet)
+        RX packets 186192  bytes 174065807 (174.0 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 59101  bytes 3943689 (3.9 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 1272  bytes 131352 (131.3 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1272  bytes 131352 (131.3 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#6.- vamos a relizar cambios en el hostname e IP
+/*
+Type the hostnamectl command :
+sudo hostnamectl set-hostname newNameHere
+Delete the old name and setup new name.
+Next Edit the /etc/hosts file:
+sudo nano /etc/hosts
+Replace any occurrence of the existing computer name with your new hostname.
+Reboot the system to changes take effect:
+sudo reboot
+*/
+
+#7.- editamos, abrimos con nano y editamos el /etc/hostname
+# registramos el hostname como: srvbigdata 
+# presionamos Ctrl+O y Enter para grabar
+# presionamos Ctrl+X para salir
+hdsdcuser@hdsdcuser-uvb:~$ sudo nano /etc/hostname
+srvbigdata
+
+#8.- editamos, abrimos con  nano y editamos el /etc/hosts
+# agregamos 10.0.2.15       srvbigdata, al final de la lista de IPs
+hdsdcuser@hdsdcuser-uvb:~$ sudo nano /etc/hosts
+
+127.0.0.1       localhost
+127.0.1.1       hdsdcuser-uvb
+10.0.2.15       srvbigdata
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+#9.- verificamos el cambio realizado del hostname, ejecutamos el comando hostnamectl
+hdsdcuser@hdsdcuser-uvb:~$ hostnamectl
+   Static hostname: srvbigdata
+Transient hostname: hdsdcuser-uvb
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: ad3f3120c97146978b4d26ef90ba409e
+           Boot ID: ddb63e1b257f44c3baaf300bde4604fc
+    Virtualization: oracle
+  Operating System: Ubuntu 20.04.1 LTS
+            Kernel: Linux 5.4.0-42-generic
+      Architecture: x86-64
+	  
+#10.- verificamos con el comando hostname
+hdsdcuser@hdsdcuser-uvb:~$ hostname
+srvbigdata
+
+#11.- verificamos viendo la versión del kernel
+hdsdcuser@hdsdcuser-uvb:~$ uname -a
+Linux srvbigdata 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+# continuamos con los siguientes pasos

@@ -1,0 +1,36 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# asignando permisos, grupo de usuario.
+
+#1.- verificamos nuestra sesión sobre que directorio nos encontramos
+hdsdcuser@srvbigdata:~$ pwd
+/home/hdsdcuser
+
+#2.- verificamos con que usuario nos estamos conectando
+hdsdcuser@srvbigdata:~$ echo $USER
+hdsdcuser
+
+#3.- creamos el grupo hadoop
+hdsdcuser@hdsdcuser-uvb:~$ sudo addgroup hadoop
+[sudo] password for hdsdcuser: 
+Adding group `hadoop' (GID 1001) ...
+Done.
+
+#4.- agregamos el usuario hdsdcuser al grupo hadoop
+hdsdcuser@hdsdcuser-uvb:~$ sudo adduser --ingroup hadoop hdsdcuser
+[sudo] password for hdsdcuser: 
+adduser: The user `hdsdcuser' already exists.
+
+#5.- asignando al usuario hdsdcuser que pueda ejeuctar como sudo
+hdsdcuser@hdsdcuser-uvb:~$ sudo adduser hdsdcuser sudo
+The user `hdsdcuser' is already a member of `sudo'.
+
+# continuamos con los siguientes pasos
+

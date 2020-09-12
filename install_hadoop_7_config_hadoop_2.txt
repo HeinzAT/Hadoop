@@ -1,0 +1,194 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# configuración para usar el almacenamiento provisionado 1TB en HDFS
+#
+
+#1.- asignamos permisos al usuario hdsdcuser del grupo hadoop al directorio creado
+hdsdcuser@srvbigdata:~$ sudo chown -R hdsdcuser:hadoop /hdfs
+
+#2.- creamos un directorio tmp en /hdfs/tmp
+hdsdcuser@srvbigdata:~$ mkdir -p /hdfs/tmp
+
+#3.- verificamos la creación del directorio
+hdsdcuser@srvbigdata:~$ ls -lhrt /hdfs
+total 20K
+drwx------ 2 hdsdcuser hadoop     16K Aug 28 12:10 lost+found
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:07 tmp
+
+#4.- configuraremos los archivos de trabajo del cluster
+# configuramos los archivos
+-- a) core-site.xml	It contains the configuration settings for Hadoop Core such as I/O settings that are common to HDFS and MapReduce.
+-- b) Map Reduce File: mapred-site.xml
+-- c) Hadoop File System: hdfs-site.xml
+-- d) File yarn-site.xml
+
+#5.- ubicamos en el directorio de instalación Hadoop y adicional debemos ingresar a /etc/hadoop
+#ubicamos los archivos /usr/local/hadoop/etc/hadoop/
+hdsdcuser@srvbigdata:~$ cd $HADOOP_HOME
+
+#5.1. podemos ver los archivos con ls -l
+hdsdcuser@srvbigdata:/usr/local/hadoop$ ls -l etc/hadoop
+total 164
+-rw-r--r-- 1 hdsdcuser hadoop  8814 Oct 22  2019 capacity-scheduler.xml
+-rw-r--r-- 1 hdsdcuser hadoop  1335 Oct 22  2019 configuration.xsl
+-rw-r--r-- 1 hdsdcuser hadoop  1211 Oct 22  2019 container-executor.cfg
+-rw-r--r-- 1 hdsdcuser hadoop   774 Oct 22  2019 core-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  4133 Oct 22  2019 hadoop-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  4969 Oct 22  2019 hadoop-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  2598 Oct 22  2019 hadoop-metrics2.properties
+-rw-r--r-- 1 hdsdcuser hadoop  2490 Oct 22  2019 hadoop-metrics.properties
+-rw-r--r-- 1 hdsdcuser hadoop 10206 Oct 22  2019 hadoop-policy.xml
+-rw-r--r-- 1 hdsdcuser hadoop   775 Oct 22  2019 hdfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  2432 Oct 22  2019 httpfs-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  1657 Oct 22  2019 httpfs-log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop    21 Oct 22  2019 httpfs-signature.secret
+-rw-r--r-- 1 hdsdcuser hadoop   620 Oct 22  2019 httpfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  3518 Oct 22  2019 kms-acls.xml
+-rw-r--r-- 1 hdsdcuser hadoop  3139 Oct 22  2019 kms-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  1788 Oct 22  2019 kms-log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop  5939 Oct 22  2019 kms-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop 14016 Oct 22  2019 log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop  1076 Oct 22  2019 mapred-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  1507 Oct 22  2019 mapred-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  4113 Oct 22  2019 mapred-queues.xml.template
+-rw-r--r-- 1 hdsdcuser hadoop   758 Oct 22  2019 mapred-site.xml.template
+-rw-r--r-- 1 hdsdcuser hadoop    10 Oct 22  2019 slaves
+-rw-r--r-- 1 hdsdcuser hadoop  2316 Oct 22  2019 ssl-client.xml.example
+-rw-r--r-- 1 hdsdcuser hadoop  2697 Oct 22  2019 ssl-server.xml.example
+-rw-r--r-- 1 hdsdcuser hadoop  2250 Oct 22  2019 yarn-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  4876 Oct 22  2019 yarn-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop   690 Oct 22  2019 yarn-site.xml
+
+#5.2. podemos ver los archivos con ls -l adicionamos filtros *.xml 
+hdsdcuser@srvbigdata:/usr/local/hadoop$ ls -l etc/hadoop/*.xml
+-rw-r--r-- 1 hdsdcuser hadoop  8814 Oct 22  2019 etc/hadoop/capacity-scheduler.xml
+-rw-r--r-- 1 hdsdcuser hadoop   774 Oct 22  2019 etc/hadoop/core-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop 10206 Oct 22  2019 etc/hadoop/hadoop-policy.xml
+-rw-r--r-- 1 hdsdcuser hadoop   775 Oct 22  2019 etc/hadoop/hdfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop   620 Oct 22  2019 etc/hadoop/httpfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  3518 Oct 22  2019 etc/hadoop/kms-acls.xml
+-rw-r--r-- 1 hdsdcuser hadoop  5939 Oct 22  2019 etc/hadoop/kms-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop   690 Oct 22  2019 etc/hadoop/yarn-site.xml
+
+#5.3.- nos regresamos a nuestro directorio raiz de la sesion de hdsdcuser
+hdsdcuser@srvbigdata:/usr/local/hadoop$ cd
+hdsdcuser@srvbigdata:~$ cd
+
+#6.- procedemos a editar los *.xml
+#6.1.- editamos el "core-site.xml"
+# agregamos la entrada dentro de tal <configuration></configuration>
+hdsdcuser@srvbigdata:~$ sudo nano $HADOOP_HOME/etc/hadoop/core-site.xml
+
+-- Add the following:
+<configuration>
+<property>
+ <name>hadoop.tmp.dir</name>
+   <value>/hdfs/tmp</value>
+   <description>A base for other temporary directories.</description>
+</property>
+<property>
+  <name>fs.default.name</name>
+   <value>hdfs://localhost:54310</value>
+    <description>The name of the default file system.  A URI whose scheme and authority determine the FileSystem implementation.  The uri's scheme determines the config property (fs.SCHEME.impl) naming the FileSystem implementation class.  The uri's authority is used to determine the host, port, etc. for a filesystem.</description>
+ </property>
+</configuration>
+
+
+#6.2.- editamos el # mapred-site.xml
+# agregamos la entrada dentro de tal <configuration></configuration>
+# previamente copiamos el archivo template
+hdsdcuser@srvbigdata:~$ cp $HADOOP_HOME/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/etc/hadoop/mapred-site.xml
+hdsdcuser@srvbigdata:~$ sudo nano $HADOOP_HOME/etc/hadoop/mapred-site.xml
+
+-- Add the following:
+<configuration>
+<property>
+  <name>mapred.job.tracker</name>
+    <value>localhost:54311</value>
+      <description> The host and port that the MapReduce job tracker runs at.  If "local", then jobs are run in-process as a single map and reduce task.
+      </description>
+</property>
+<property>
+<name>mapreduce.framework.name</name>
+   <value>yarn</value>
+</property>
+</configuration>
+
+
+#6.2.- editamos el # hdfs-site.xml
+# agregamos la entrada dentro de tal <configuration></configuration>
+-- HDFS ha demostrado una escalabilidad de producción de hasta 200 petabytes 
+-- y un cluster único de 4.500 servidores con cerca de mil millones de ficheros y bloques. 
+-- Si nos quedamos sin espacio, solo tenemos que añadir más nodos para aumentar el espacio.
+-- HDFS consigue la escalabilidad mediante el particionamiento o separación de ficheros 
+-- de gran tamaño en múltiples equipos. Esto permite el acceso paralelo a ficheros muy grandes 
+-- puesto que el procesamiento se ejecuta en paralelo en cada nodo en el que se almacenan los datos. 
+-- El tamaño típico de fichero va del orden de gigabytes a terabytes. 
+-- El tamaño de bloque por defecto, entendido como el tamaño de cada fragmento de un fichero, 
+-- es de 64 megabytes, pero podemos configurarlo a cualquier tamaño.
+
+
+#6.3.- previamente debemos crear en el directorio hdfs el directorio para namenode y datanode
+hdsdcuser@srvbigdata:~$ mkdir -p /hdfs/namenode
+
+#
+hdsdcuser@srvbigdata:~$ ls -lhrt /hdfs/
+total 24K
+drwx------ 2 hdsdcuser hadoop     16K Aug 28 12:10 lost+found
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:07 tmp
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:30 namenode
+
+#
+hdsdcuser@srvbigdata:~$ mkdir -p /hdfs/datanode
+hdsdcuser@srvbigdata:~$ ls -lhrt /hdfs/
+total 28K
+drwx------ 2 hdsdcuser hadoop     16K Aug 28 12:10 lost+found
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:07 tmp
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:30 namenode
+drwxrwxr-x 2 hdsdcuser hdsdcuser 4.0K Aug 28 16:32 datanode
+
+#
+hdsdcuser@srvbigdata:~$ sudo nano $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+--Add the following
+<configuration>
+ <property>
+  <name>dfs.replication</name>
+  <value>1</value>
+  <description>Default block replication.The actual number of replications can be specified when the file is created. The default is used if replication is not specified in create time.
+  </description>
+ </property>
+ <property>
+   <name>dfs.namenode.name.dir</name>
+   <value>file:/hdfs/namenode</value>
+ </property>
+ <property>
+   <name>dfs.datanode.data.dir</name>
+   <value>file:/hdfs/datanode</value>
+ </property>
+</configuration>
+
+
+
+#6.1.- editamos el "yarn-site.xml"
+# agregamos la entrada dentro de tal <configuration></configuration>
+
+hdsdcuser@srvbigdata:~$ sudo nano $HADOOP_HOME/etc/hadoop/yarn-site.xml
+
+--Add the following
+<configuration>
+   <property>
+      <name>yarn.nodemanager.aux-services</name>
+      <value>mapreduce_shuffle</value>
+   </property>
+</configuration>
+
+
+# continuamos con los siguientes pasos

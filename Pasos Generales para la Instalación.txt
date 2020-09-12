@@ -1,0 +1,26 @@
+#
+#Sobre Sistema Operativo Ubuntu
+#
+
+
+0.- Pasos preliminares (revisión de configuraciones)
+   
+1.- Instalar el OpenSSH Server
+
+2.- Instalar el java 8 (usaremos el OpenJDK 8, en revisión OpenJDK11)
+- Se puede considerar instalar el Oracle JDK 8.
+- Se va a instalar el JDK y JRE.
+
+3.- Grupos, usuarios y privilegios
+
+4.- Relación de confianza entre nodos (ssh-keygen)
+
+5.- Instalación de binario hadoop
+- Descarga de binario
+- Descomprimir los binarios
+- Ubicar los archivos binarios en el directorio de instalación
+	/usr/local/hadoop
+
+6.- Gestión de unidades de disco (storage)
+
+7.- Configuracion de Hadoop

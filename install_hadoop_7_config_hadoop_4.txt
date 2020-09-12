@@ -1,0 +1,75 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# iniciaremos los demonios de hadoop
+#
+
+#1.- Start Hadoop Daemons (jps (Java Virtual Machine Process Status))
+# usaremos el comando jps, para verificar si se iniciaron los servicios
+
+#2.- no hay servicios de hadoop
+hdsdcuser@srvbigdata:~$ jps
+4384 Jps
+
+#3.- iniciamos todos los servicios (está deprecado), pero lo ejecutaremos, en labs más avanzandos se debe ejecutar por cada servicio configurado
+hdsdcuser@srvbigdata:~$ start-all.sh
+This script is Deprecated. Instead use start-dfs.sh and start-yarn.sh
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-namenode-srvbigdata.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-datanode-srvbigdata.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-secondarynamenode-srvbigdata.out
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hdsdcuser-resourcemanager-srvbigdata.out
+localhost: starting nodemanager, logging to /usr/local/hadoop/logs/yarn-hdsdcuser-nodemanager-srvbigdata.out
+
+#3.- si hay servicios de hadoop
+hdsdcuser@srvbigdata:~$ jps
+5233 NodeManager
+4598 NameNode
+4760 DataNode
+5341 Jps
+4958 SecondaryNameNode
+5086 ResourceManager
+
+#4.- paramos los servicios (está deprecado), pero lo ejecutaremos, en labs más avanzandos se debe ejecutar por cada servicio configurado
+hdsdcuser@srvbigdata:~$ stop-all.sh
+This script is Deprecated. Instead use stop-dfs.sh and stop-yarn.sh
+Stopping namenodes on [localhost]
+localhost: stopping namenode
+localhost: stopping datanode
+Stopping secondary namenodes [0.0.0.0]
+0.0.0.0: stopping secondarynamenode
+stopping yarn daemons
+stopping resourcemanager
+localhost: stopping nodemanager
+localhost: nodemanager did not stop gracefully after 5 seconds: killing with kill -9
+no proxyserver to stop
+
+hdsdcuser@srvbigdata:~$ jps
+6247 Jps
+
+
+#5.- volvermos a inciar para verificar los servicios levantados en el browser
+hdsdcuser@srvbigdata:~$ start-all.sh
+This script is Deprecated. Instead use start-dfs.sh and start-yarn.sh
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-namenode-srvbigdata.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-datanode-srvbigdata.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hdsdcuser-secondarynamenode-srvbigdata.out
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hdsdcuser-resourcemanager-srvbigdata.out
+localhost: starting nodemanager, log
+
+
+#6.- nevegar en 
+http://localhost:50070
+http://localhost:8088
+

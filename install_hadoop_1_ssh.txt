@@ -1,0 +1,81 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+# instalando el OpenSSH en el equipo servidor
+#
+#1.- Tratamos de ubicar la IP asignada a nuestra 
+#usamos el comando ifconfig... verificar la IP regularmente es la 10.0.2.15
+[hdsdcuser@localhost ~]$ ifconfig
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::6ea3:420:16db:5b8b  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:bf:26:a9  txqueuelen 1000  (Ethernet)
+        RX packets 48  bytes 8601 (8.3 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 107  bytes 11451 (11.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 48  bytes 4080 (3.9 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 48  bytes 4080 (3.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#
+#2.- Si no aparece la ip, puede ser que no tiene instalado el net-tools
+[hdsdcuser@localhost ~]$ sudo apt-get install net-tools
+
+#3.- podemos volver a llamar a ifconfig
+[hdsdcuser@localhost ~]$ ifconfig
+
+#4.-Instalar el servidor openssh-server en Ubuntu. 
+#Usamos el comando: dnf install openssh-sever
+[root@localhost ~]# sudo apt-get install openssh-server
+Last metadata expiration check: 2:04:11 ago on Thu 20 Aug 2020 01:44:31 PM EDT.
+Package openssh-server-8.0p1-4.el8_1.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+
+#5.- Iniciamos el servicio y verificamos el estado del openssh
+#Usamos los comandos,
+# para iniciar el servicio: sudo systemctl start sshd
+# para habilitar el servicio cada vez que inicie el SO: systemctl enable sshd
+[root@localhost ~]# sudo systemctl start sshd
+[root@localhost ~]# sudo systemctl enable sshd
+
+#6.- Verificamos el status del servicio
+# para verificar el servicio: systemctl status sshd
+[root@localhost ~]# sudo systemctl status sshd
+● sshd.service - OpenSSH server daemon
+   Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; vendor preset>
+   Active: active (running) since Thu 2020-08-20 13:55:16 EDT; 1h 53min ago
+     Docs: man:sshd(8)
+           man:sshd_config(5)
+ Main PID: 1021 (sshd)
+    Tasks: 1 (limit: 23813)
+   Memory: 2.4M
+   CGroup: /system.slice/sshd.service
+           └─1021 /usr/sbin/sshd -D -oCiphers=aes256-gcm@openssh.com,chacha20-p>
+
+Aug 20 13:55:16 localhost.localdomain systemd[1]: Starting OpenSSH server daemo>
+Aug 20 13:55:16 localhost.localdomain sshd[1021]: Server listening on 0.0.0.0 p>
+Aug 20 13:55:16 localhost.localdomain sshd[1021]: Server listening on :: port 2>
+Aug 20 13:55:16 localhost.localdomain systemd[1]: Started OpenSSH server daemon.
+
+
+# 7.- recargamos el servicio
+[root@localhost ~]# sudo systemctl reload sshd
+
+#podemos configurar la VM para conectarnos por el putty a través de ssh
+
+# continuamos con los siguientes pasos

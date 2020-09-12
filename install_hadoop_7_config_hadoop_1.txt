@@ -1,0 +1,152 @@
+# Social Data Consulting
+# Programa de Especialización Hadoop: Soluciones Big Data
+#
+# Autor: Erick Luna Rojas 
+# Fecha: 29-Agosto-2020
+#
+# Módulo I - Básico
+#
+# Pasos previos sobre nuestra plataforma de servidores
+#validamos nuestra instalaci{on hadoop y nuestro disco HDFS 
+
+#1.- verificamos el hadoop instalado en el SO desde su binario, 
+# llegamos a la ruta base de hadoop /usr/local/hadoop/
+# ejecutamos el /usr/local/hadoop/bin/hadoop version, esto lo hacemos porque nos falta configurar las variables de entorno
+#
+hdsdcuser@srvbigdata:~$ /usr/local/hadoop/bin/hadoop version
+Hadoop 2.10.0
+Subversion ssh://git.corp.linkedin.com:29418/hadoop/hadoop.git -r e2f1f118e465e787d8567dfa6e2f3b72a0eb9194
+Compiled by jhung on 2019-10-22T19:10Z
+Compiled with protoc 2.5.0
+From source with checksum 7b2d8877c5ce8c9a2cca5c7e81aa4026
+This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.10.0.jar
+
+#2.- verificamos nuestra unidades y directorios del SO
+hdsdcuser@srvbigdata:~$ df -h
+Filesystem                 Size  Used Avail Use% Mounted on
+udev                       1.9G     0  1.9G   0% /dev
+tmpfs                      394M  1.4M  393M   1% /run
+/dev/mapper/vgubuntu-root   93G  9.3G   79G  11% /
+tmpfs                      2.0G   20M  2.0G   1% /dev/shm
+tmpfs                      5.0M  4.0K  5.0M   1% /run/lock
+tmpfs                      2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/loop0                  55M   55M     0 100% /snap/core18/1705
+/dev/loop1                  56M   56M     0 100% /snap/core18/1885
+/dev/loop2                 241M  241M     0 100% /snap/gnome-3-34-1804/24
+/dev/loop3                 256M  256M     0 100% /snap/gnome-3-34-1804/36
+/dev/loop4                  63M   63M     0 100% /snap/gtk-common-themes/1506
+/dev/loop5                  50M   50M     0 100% /snap/snap-store/433
+/dev/loop7                  28M   28M     0 100% /snap/snapd/7264
+/dev/loop6                  50M   50M     0 100% /snap/snap-store/467
+/dev/loop8                  30M   30M     0 100% /snap/snapd/8790
+/dev/sda1                  511M  4.0K  511M   1% /boot/efi
+/dev/sdb1                 1007G   77M  956G   1% /hdfs
+tmpfs                      394M   28K  394M   1% /run/user/1000
+
+#3.- ahora vamos a configurar hadoop para ejecutar sus binarios, usaremos las configuraciones del bashrc
+
+#4.- #ingresar con el usuario hdsdcuser, debemos verificar si estamos con dicho usuario
+# recordar que será utilizado como sudo, ya anteriormente le dimos ese privilegio
+#
+hdsdcuser@srvbigdata:~$ pwd
+/home/hdsdcuser
+#
+hdsdcuser@srvbigdata:~$ echo $USER
+hdsdcuser
+
+#5.- ingresr al directorio raiz de la sesion de hdsdcuser
+hdsdcuser@srvbigdata:~$ cd
+
+#6.- editar el archivo .bashrc, agregamos las rutas de Hadoop en el PATH
+hdsdcuser@srvbigdata:~$ sudo nano .bashrc
+
+###################################################################
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+###################################################################
+export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+###################################################################
+
+#7.- terminado de registrar y grabado el archivo correctamente, procedemos a reiniciar la sesión . .bashrc
+hdsdcuser@srvbigdata:~$ . .bashrc
+
+#8.- verificamos las variables de entorno exportadas y registradas en el archivo
+hdsdcuser@srvbigdata:~$ echo $HADOOP_HOME
+/usr/local/hadoop
+
+#9.- buscaremos la siguiente ruta /usr/local/hadoop/etc/hadoop/
+# a ubicar el bash hadoop-env.sh
+# para configurar el JAVA_HOME y ejecute los binarios 
+hdsdcuser@srvbigdata:~$ cd $HADOOP_HOME/etc/hadoop/
+
+#
+hdsdcuser@srvbigdata:/usr/local/hadoop/etc/hadoop$ ls -l
+total 164
+-rw-r--r-- 1 hdsdcuser hadoop  8814 Oct 22  2019 capacity-scheduler.xml
+-rw-r--r-- 1 hdsdcuser hadoop  1335 Oct 22  2019 configuration.xsl
+-rw-r--r-- 1 hdsdcuser hadoop  1211 Oct 22  2019 container-executor.cfg
+-rw-r--r-- 1 hdsdcuser hadoop   774 Oct 22  2019 core-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  4133 Oct 22  2019 hadoop-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  4969 Oct 22  2019 hadoop-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  2598 Oct 22  2019 hadoop-metrics2.properties
+-rw-r--r-- 1 hdsdcuser hadoop  2490 Oct 22  2019 hadoop-metrics.properties
+-rw-r--r-- 1 hdsdcuser hadoop 10206 Oct 22  2019 hadoop-policy.xml
+-rw-r--r-- 1 hdsdcuser hadoop   775 Oct 22  2019 hdfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  2432 Oct 22  2019 httpfs-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  1657 Oct 22  2019 httpfs-log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop    21 Oct 22  2019 httpfs-signature.secret
+-rw-r--r-- 1 hdsdcuser hadoop   620 Oct 22  2019 httpfs-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop  3518 Oct 22  2019 kms-acls.xml
+-rw-r--r-- 1 hdsdcuser hadoop  3139 Oct 22  2019 kms-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  1788 Oct 22  2019 kms-log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop  5939 Oct 22  2019 kms-site.xml
+-rw-r--r-- 1 hdsdcuser hadoop 14016 Oct 22  2019 log4j.properties
+-rw-r--r-- 1 hdsdcuser hadoop  1076 Oct 22  2019 mapred-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  1507 Oct 22  2019 mapred-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop  4113 Oct 22  2019 mapred-queues.xml.template
+-rw-r--r-- 1 hdsdcuser hadoop   758 Oct 22  2019 mapred-site.xml.template
+-rw-r--r-- 1 hdsdcuser hadoop    10 Oct 22  2019 slaves
+-rw-r--r-- 1 hdsdcuser hadoop  2316 Oct 22  2019 ssl-client.xml.example
+-rw-r--r-- 1 hdsdcuser hadoop  2697 Oct 22  2019 ssl-server.xml.example
+-rw-r--r-- 1 hdsdcuser hadoop  2250 Oct 22  2019 yarn-env.cmd
+-rw-r--r-- 1 hdsdcuser hadoop  4876 Oct 22  2019 yarn-env.sh
+-rw-r--r-- 1 hdsdcuser hadoop   690 Oct 22  2019 yarn-site.xml
+
+#
+hdsdcuser@srvbigdata:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64
+
+#10.- configuramos el /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+#editamos y agregamos: export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+hdsdcuser@srvbigdata:~$ sudo nano /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+# Set Hadoop-specific environment variables here.
+
+# The only required environment variable is JAVA_HOME.  All others are
+# optional.  When running a distributed configuration it is best to
+# set JAVA_HOME in this file, so that it is correctly defined on
+# remote nodes.
+
+# The java implementation to use.
+#export JAVA_HOME=${JAVA_HOME}
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+#11.- guardamos correctamente el archivo y verificamos que ejecute los comandos hadoop
+hdsdcuser@srvbigdata:~$ hadoop version
+Hadoop 2.10.0
+Subversion ssh://git.corp.linkedin.com:29418/hadoop/hadoop.git -r e2f1f118e465e787d8567dfa6e2f3b72a0eb9194
+Compiled by jhung on 2019-10-22T19:10Z
+Compiled with protoc 2.5.0
+From source with checksum 7b2d8877c5ce8c9a2cca5c7e81aa4026
+This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.10.0.jar
+
+
+# continuamos con los siguientes pasos
